@@ -170,6 +170,8 @@ final class ArchiveDumpCommands extends DrushCommands
         $archive = new PharData($archivePath);
 
         $this->createManifestFile($options);
+
+        $this->logger()->info(var_export($this->archiveDir, TRUE));
         $archive->buildFromDirectory($this->archiveDir);
 
         $this->logger()->info(dt('Compressing archive...'));
