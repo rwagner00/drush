@@ -173,7 +173,7 @@ final class ArchiveDumpCommands extends DrushCommands
         $this->createManifestFile($options);
 
         $this->logger()->info(var_export($this->archiveDir, TRUE));
-        $archive->buildFromDirectory($this->archiveDir);
+        $archive->buildFromDirectory($this->archiveDir, '/^\/files$/');
 
         $this->logger()->info(dt('Compressing archive...'));
         $this->filesystem->remove($archivePath . '.gz');
