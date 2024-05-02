@@ -166,7 +166,7 @@ final class ArchiveDumpCommands extends DrushCommands
         $this->logger()->info(dt('Creating archive...'));
         $archivePath = Path::join(dirname($this->archiveDir), self::ARCHIVE_FILE_NAME);
 
-        // stream_wrapper_restore('phar');
+        stream_wrapper_restore('phar');
         $this->logger()->info(var_export($archivePath, TRUE));
         $archive = new PharData($archivePath);
 
