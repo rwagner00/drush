@@ -176,11 +176,11 @@ final class ArchiveDumpCommands extends DrushCommands
         $archive->buildFromDirectory($this->archiveDir, '/^\/files$/');
 
         $this->logger()->info(dt('Compressing archive...'));
-        $this->filesystem->remove($archivePath . '.gz');
+        // $this->filesystem->remove($archivePath . '.gz');
         $archive->compress(Phar::GZ);
 
         unset($archive);
-        Phar::unlinkArchive($archivePath);
+        // Phar::unlinkArchive($archivePath);
         $archivePath .= '.gz';
 
         if (!$options['destination']) {
