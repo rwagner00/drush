@@ -173,6 +173,25 @@ final class ArchiveDumpCommands extends DrushCommands
         $this->createManifestFile($options);
 
         $this->logger()->info(var_export($this->archiveDir, TRUE));
+
+        // If symlinks are disabled, convert symlinks to full content.
+        if (is_dir($this->archiveDir)) {
+            $iterator = new DirectoryIterator($this->archiveDir);
+
+            foreach ($iterator as $fileinfo) {
+                if ($fileinfo->isLink()) {
+                    $symlinkPath = $fileinfo->getPathname();
+                    $targetPath = readlink($symlinkPath);
+
+                    if (file_exists($targetPath)) {
+                        $contents = file_get_contents($targetPath);
+                        unlink($symlinkPath);
+                        file_put_contents($symlinkPath, $contents);
+                    }
+                }
+            }
+        }
+
         $archive->buildFromDirectory($this->archiveDir);
 
         $this->logger()->info(dt('Compressing archive...'));
