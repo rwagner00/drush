@@ -177,7 +177,7 @@ final class ArchiveDumpCommands extends DrushCommands
 
         // If symlinks are disabled, convert symlinks to full content.
         if (is_dir($this->archiveDir)) {
-            $iterator = new DirectoryIterator($this->archiveDir);
+            $iterator = new \DirectoryIterator($this->archiveDir);
 
             foreach ($iterator as $fileinfo) {
                 if ($fileinfo->isLink()) {
