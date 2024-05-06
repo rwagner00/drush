@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
+use DirectoryIterator;
 use Drupal;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
