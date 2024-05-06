@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use DirectoryIterator;
 use Drupal;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
@@ -177,17 +176,19 @@ final class ArchiveDumpCommands extends DrushCommands
 
         // If symlinks are disabled, convert symlinks to full content.
         if (is_dir($this->archiveDir)) {
-            $iterator = new \DirectoryIterator($this->archiveDir);
+            $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->archiveDir), RecursiveIteratorIterator::SELF_FIRST);
 
-            foreach ($iterator as $fileinfo) {
-                if ($fileinfo->isLink()) {
-                    $symlinkPath = $fileinfo->getPathname();
-                    $targetPath = readlink($symlinkPath);
-
-                    if (file_exists($targetPath)) {
-                        $contents = file_get_contents($targetPath);
-                        unlink($symlinkPath);
-                        file_put_contents($symlinkPath, $contents);
+            foreach ($iterator as $file) {
+                if ($file->isLink()) {
+                    $target = readlink($file->getPathname());
+                    if (is_file($target)) {
+                        $content = file_get_contents($target);
+                        unlink($file->getPathname());
+                        file_put_contents($file->getPathname(), $content);
+                    } elseif (is_dir($target)) {
+                        unlink($file->getPathname());
+                        mkdir($file->getPathname());
+                        replaceSymlinksWithContent($target);
                     }
                 }
             }
