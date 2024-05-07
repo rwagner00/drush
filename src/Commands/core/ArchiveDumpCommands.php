@@ -181,14 +181,15 @@ final class ArchiveDumpCommands extends DrushCommands
             foreach ($iterator as $file) {
                 if ($file->isLink()) {
                     $target = readlink($file->getPathname());
-                    $this->logger()->info("findme " . var_export($target, TRUE));
+                    $this->logger()->info("filterme " . var_export($target, TRUE));
+                    $this->logger()->info("filterme " . var_export($file, TRUE));
                     if (is_file($target)) {
-                        $this->logger()->info("findme" . " is file");
+                        $this->logger()->info("filterme " . "is file");
                         $content = file_get_contents($target);
                         unlink($file->getPathname());
                         file_put_contents($file->getPathname(), $content);
                     } elseif (is_dir($target)) {
-                        $this->logger()->info("findme " . "is dir");
+                        $this->logger()->info("filterme " . "is dir");
                         unlink($file->getPathname());
                         mkdir($file->getPathname());
                         replaceSymlinksWithContent($target);
