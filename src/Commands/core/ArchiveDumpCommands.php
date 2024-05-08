@@ -201,9 +201,20 @@ final class ArchiveDumpCommands extends DrushCommands
                         unlink($file->getPathname());
                         file_put_contents($file->getPathname(), $content);
                     } elseif (is_dir($target)) {
-                        unlink($file->getPathname());
-                        mkdir($file->getPathname());
-                        replaceSymlinksWithContent($target);
+                        $path = $file->getPath();
+                        unlink($path);
+                        mkdir($path, 0755);
+                        foreach (
+                            $iterator = new \RecursiveIteratorIterator(
+                                new \RecursiveDirectoryIterator($target, \RecursiveDirectoryIterator::SKIP_DOTS),
+                                \RecursiveIteratorIterator::SELF_FIRST) as $item
+                        ) {
+                            if ($item->isDir()) {
+                                mkdir($path . DIRECTORY_SEPARATOR . $iterator->getSubPathname());
+                            } else {
+                                copy($item, $path . DIRECTORY_SEPARATOR . $iterator->getSubPathname());
+                            }
+                        }
                     }
                 }
             }
