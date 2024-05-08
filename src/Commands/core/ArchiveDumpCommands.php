@@ -201,7 +201,7 @@ final class ArchiveDumpCommands extends DrushCommands
                         unlink($file->getPathname());
                         file_put_contents($file->getPathname(), $content);
                     } elseif (is_dir($target)) {
-                        $path = $file->getPath();
+                        $path = $file->getPathname();
                         unlink($path);
                         mkdir($path, 0755);
                         foreach (
