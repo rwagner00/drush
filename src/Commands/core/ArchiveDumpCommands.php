@@ -186,10 +186,6 @@ final class ArchiveDumpCommands extends DrushCommands
                     $this->logger()->info("filterme glt " . $file->getLinkTarget());
                     $this->logger()->info("filterme grp " . $file->getRealPath());
 
-                    if () {
-
-                    }
-
                     if (is_file($target)) {
                         $this->logger()->info("filterme " . "is file");
                         $content = file_get_contents($target);
