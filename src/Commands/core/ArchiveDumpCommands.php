@@ -185,14 +185,22 @@ final class ArchiveDumpCommands extends DrushCommands
                     $this->logger()->info("filterme gp " . $file->getPath());
                     $this->logger()->info("filterme glt " . $file->getLinkTarget());
                     $this->logger()->info("filterme grp " . $file->getRealPath());
+                    $this->logger()->info("filterme gpn " . $file->getPathname());
+
+                    /**
+                     * [info] filterme target /Users/ryan/Code/TestSites/test [3.25 sec, 24.95 MB]
+                     * [info] filterme gp /tmp/findmetmp/code [3.25 sec, 24.95 MB]
+                     * [info] filterme glt /Users/ryan/Code/TestSites/test [3.25 sec, 24.95 MB]
+                     * [info] filterme grp  [3.25 sec, 24.95 MB]
+                     */
+
+
 
                     if (is_file($target)) {
-                        $this->logger()->info("filterme " . "is file");
                         $content = file_get_contents($target);
                         unlink($file->getPathname());
                         file_put_contents($file->getPathname(), $content);
                     } elseif (is_dir($target)) {
-                        $this->logger()->info("filterme " . "is dir");
                         unlink($file->getPathname());
                         mkdir($file->getPathname());
                         replaceSymlinksWithContent($target);
