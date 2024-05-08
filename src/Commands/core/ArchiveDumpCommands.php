@@ -224,8 +224,9 @@ final class ArchiveDumpCommands extends DrushCommands
         $this->filesystem->remove($archivePath . '.gz');
         $archive->compress(Phar::GZ);
 
+        // @todo uncomment.
         // unset($archive);
-        Phar::unlinkArchive($archivePath);
+        // Phar::unlinkArchive($archivePath);
         $archivePath .= '.gz';
 
         if (!$options['destination']) {
