@@ -181,9 +181,14 @@ final class ArchiveDumpCommands extends DrushCommands
             foreach ($iterator as $file) {
                 if ($file->isLink()) {
                     $target = readlink($file->getPathname());
+                    $this->logger()->info("filterme target " . $target);
                     $this->logger()->info("filterme gp " . $file->getPath());
                     $this->logger()->info("filterme glt " . $file->getLinkTarget());
                     $this->logger()->info("filterme grp " . $file->getRealPath());
+
+                    if () {
+
+                    }
 
                     if (is_file($target)) {
                         $this->logger()->info("filterme " . "is file");
