@@ -212,7 +212,7 @@ final class ArchiveDumpCommands extends DrushCommands
                             if ($item->isDir()) {
                                 mkdir($path . DIRECTORY_SEPARATOR . $iterator->getSubPathname());
                             } else {
-                                copy($item, $path . DIRECTORY_SEPARATOR . $iterator->getSubPathname());
+                                copy($item->getPathname(), $path . DIRECTORY_SEPARATOR . $iterator->getSubPathname());
                             }
                         }
                     }
