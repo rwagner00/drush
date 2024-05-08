@@ -207,6 +207,7 @@ final class ArchiveDumpCommands extends DrushCommands
                                 new \RecursiveDirectoryIterator($target, \RecursiveDirectoryIterator::SKIP_DOTS),
                                 \RecursiveIteratorIterator::SELF_FIRST) as $item
                         ) {
+                            $this->logger()->info("filterme pathnamenested " . $item->getPathname());
                             if ($item->isDir()) {
                                 mkdir($path . DIRECTORY_SEPARATOR . $iterator->getSubPathname());
                             } else {
@@ -224,9 +225,8 @@ final class ArchiveDumpCommands extends DrushCommands
         $this->filesystem->remove($archivePath . '.gz');
         $archive->compress(Phar::GZ);
 
-        // @todo uncomment.
-        // unset($archive);
-        // Phar::unlinkArchive($archivePath);
+        unset($archive);
+        Phar::unlinkArchive($archivePath);
         $archivePath .= '.gz';
 
         if (!$options['destination']) {
