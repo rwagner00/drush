@@ -195,10 +195,12 @@ final class ArchiveDumpCommands extends DrushCommands
                      */
 
                     if (is_file($target)) {
+                        $this->logger()->info("filterme isfile");
                         $content = file_get_contents($target);
                         unlink($file->getPathname());
                         file_put_contents($file->getPathname(), $content);
                     } elseif (is_dir($target)) {
+                        $this->logger()->info("filterme isdir");
                         $path = $file->getPathname();
                         unlink($path);
                         mkdir($path, 0755);
