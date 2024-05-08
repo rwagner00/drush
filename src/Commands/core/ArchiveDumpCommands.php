@@ -194,8 +194,6 @@ final class ArchiveDumpCommands extends DrushCommands
                      * [info] filterme grp  [3.25 sec, 24.95 MB]
                      */
 
-
-
                     if (is_file($target)) {
                         $content = file_get_contents($target);
                         unlink($file->getPathname());
@@ -226,7 +224,7 @@ final class ArchiveDumpCommands extends DrushCommands
         $this->filesystem->remove($archivePath . '.gz');
         $archive->compress(Phar::GZ);
 
-        unset($archive);
+        // unset($archive);
         Phar::unlinkArchive($archivePath);
         $archivePath .= '.gz';
 
