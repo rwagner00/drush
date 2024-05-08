@@ -177,7 +177,7 @@ final class ArchiveDumpCommands extends DrushCommands
         $this->logger()->info(var_export($this->archiveDir, TRUE));
 
         // If symlinks are disabled, convert symlinks to full content.
-        if (is_dir($this->archiveDir) &&_$options['convert-symlinks'] == TRUE) {
+        if ($options['convert-symlinks'] === TRUE && is_dir($this->archiveDir)) {
             $this->logger()->info(dt('Converting symlinks...'));
 
             $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->archiveDir), RecursiveIteratorIterator::SELF_FIRST);
