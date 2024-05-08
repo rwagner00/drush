@@ -194,12 +194,15 @@ final class ArchiveDumpCommands extends DrushCommands
                      * [info] filterme grp  [3.25 sec, 24.95 MB]
                      */
 
-                    if ($file->isFile()) {
+                    $this->logger()->info(var_export(is_dir($target), true));
+                    $this->logger()->info(var_export(is_file($target), true));
+
+                    if (is_file($target)) {
                         $this->logger()->info("filterme isfile");
                         $content = file_get_contents($target);
                         unlink($file->getPathname());
                         file_put_contents($file->getPathname(), $content);
-                    } elseif ($file->isDir()) {
+                    } elseif (is_dir($target)) {
                         $this->logger()->info("filterme isdir");
                         $path = $file->getPathname();
                         unlink($path);
