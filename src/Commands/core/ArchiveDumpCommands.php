@@ -67,6 +67,7 @@ final class ArchiveDumpCommands extends DrushCommands
     #[CLI\Option(name: 'destination', description: 'The full path and filename in which the archive should be stored. Any relative path will be calculated from Drupal root (usually <info>web</info> for drupal/recommended-project projects). If omitted, it will be saved to the configured temp directory.')]
     #[CLI\Option(name: 'overwrite', description: 'Overwrite destination file if exists.')]
     #[CLI\Option(name: 'code', description: 'Archive codebase.')]
+    #[CLI\Option(name: 'convert-symlinks', description: 'Converts all symlinks into standard files/directories.')]
     #[CLI\Option(name: 'exclude-code-paths', description: 'Comma-separated list of paths (or regular expressions matching paths) to exclude from the code archive.')]
     #[CLI\Option(name: 'extra-dump', description: 'Add custom arguments/options to the dumping of the database (e.g. <info>mysqldump</info> command).')]
     #[CLI\Option(name: 'files', description: 'Archive Drupal files.')]
@@ -98,6 +99,7 @@ final class ArchiveDumpCommands extends DrushCommands
         'generatorversion' => InputOption::VALUE_REQUIRED,
         'exclude-code-paths' => InputOption::VALUE_REQUIRED,
         'extra-dump' => self::REQ,
+        'convert-symlinks' => false,
     ]): string
     {
         $this->prepareArchiveDir();
@@ -175,35 +177,20 @@ final class ArchiveDumpCommands extends DrushCommands
         $this->logger()->info(var_export($this->archiveDir, TRUE));
 
         // If symlinks are disabled, convert symlinks to full content.
-        if (is_dir($this->archiveDir)) {
+        if (is_dir($this->archiveDir) &&_$options['convert-symlinks'] == TRUE) {
+            $this->logger()->info(dt('Converting symlinks...'));
+
             $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->archiveDir), RecursiveIteratorIterator::SELF_FIRST);
 
             foreach ($iterator as $file) {
                 if ($file->isLink()) {
                     $target = readlink($file->getPathname());
-                    $this->logger()->info("filterme target " . $target);
-                    $this->logger()->info("filterme gp " . $file->getPath());
-                    $this->logger()->info("filterme glt " . $file->getLinkTarget());
-                    $this->logger()->info("filterme grp " . $file->getRealPath());
-                    $this->logger()->info("filterme gpn " . $file->getPathname());
-
-                    /**
-                     * [info] filterme target /Users/ryan/Code/TestSites/test [3.25 sec, 24.95 MB]
-                     * [info] filterme gp /tmp/findmetmp/code [3.25 sec, 24.95 MB]
-                     * [info] filterme glt /Users/ryan/Code/TestSites/test [3.25 sec, 24.95 MB]
-                     * [info] filterme grp  [3.25 sec, 24.95 MB]
-                     */
-
-                    $this->logger()->info(var_export(is_dir($target), true));
-                    $this->logger()->info(var_export(is_file($target), true));
 
                     if (is_file($target)) {
-                        $this->logger()->info("filterme isfile");
                         $content = file_get_contents($target);
                         unlink($file->getPathname());
                         file_put_contents($file->getPathname(), $content);
                     } elseif (is_dir($target)) {
-                        $this->logger()->info("filterme isdir");
                         $path = $file->getPathname();
                         unlink($path);
                         mkdir($path, 0755);
@@ -212,7 +199,6 @@ final class ArchiveDumpCommands extends DrushCommands
                                 new \RecursiveDirectoryIterator($target, \RecursiveDirectoryIterator::SKIP_DOTS),
                                 \RecursiveIteratorIterator::SELF_FIRST) as $item
                         ) {
-                            $this->logger()->info("filterme pathnamenested " . $item->getPathname());
                             if ($item->isDir()) {
                                 mkdir($path . DIRECTORY_SEPARATOR . $iterator->getSubPathname());
                             } else {
